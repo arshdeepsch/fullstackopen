@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
+
 const Languages = ({ country }) => {
   const langKeys = Object.keys(country.languages)
   return (
@@ -32,7 +33,35 @@ const Flag = ({ country }) => {
   )
 }
 
-const Filter = ({ data, filtData, setFiltData }) => {
+const Weather = ({ city_name, api_key }) => {
+  const [weather, setWeather] = useState({})
+
+  useEffect(() => {
+    axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api_key}&units=metric`).then((resp) => {
+      setWeather(resp.data);
+    })
+  }, [])
+
+  if (Object.keys(weather).length > 0) {
+    return (
+      <div>
+        <h2>{`Weather in ${city_name}`}</h2>
+        <div><b>temperature:</b> {weather.main.temp} C</div>
+        <img src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}></img>
+        <div><b>wind: </b>{weather.wind.speed} m/s direction {weather.wind.deg} deg</div>
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <h2>{`Weather in ${city_name}`}</h2>
+        <h3>Not available</h3>
+      </div>
+    )
+  }
+}
+
+const Filter = ({ data, filtData, setFiltData, api_key }) => {
   if (data.length > 10) {
     return (
       <div>
@@ -41,6 +70,7 @@ const Filter = ({ data, filtData, setFiltData }) => {
     )
   }
   else if (data.length === 1) {
+    const city_name = data[0].capital
     return (
       <div>
         <h1>{data[0].name.common}</h1>
@@ -48,8 +78,10 @@ const Filter = ({ data, filtData, setFiltData }) => {
         <div>population: {data[0].population}</div>
         <Languages country={data[0]} />
         <Flag country={data[0]} />
+        <Weather api_key={api_key} city_name={city_name} />
       </div>
     )
+
   } else {
     return (
       <div>
@@ -61,6 +93,7 @@ const Filter = ({ data, filtData, setFiltData }) => {
 }
 
 const App = (props) => {
+  const api_key = process.env.REACT_APP_API_KEY
   const [data, setData] = useState([])
   const [filtData, setFiltData] = useState([])
   const [search, setSearch] = useState('')
@@ -85,7 +118,7 @@ const App = (props) => {
   return (
     <div>
       find countries <input onChange={handleChange}></input>
-      <Filter data={filtData} setFiltData={setFiltData} filtData={filtData} />
+      <Filter data={filtData} setFiltData={setFiltData} filtData={filtData} api_key={api_key} />
     </div>
   )
 }
