@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Filter from './Components/Filter'
 import PersonForm from './Components/PersonForm'
 import Persons from './Components/Persons'
-import axios from 'axios'
-
+import personService from './service/PersonService.js'
 
 const App = (props) => {
   const [persons, setPersons] = useState([])
@@ -12,8 +11,8 @@ const App = (props) => {
   const [filtered, setFiltered] = useState([])
 
   useEffect(() => {
-    console.log('in effect')
-    axios.get('http://localhost:3001/persons').then((resp) => { setPersons(resp.data); setFiltered(resp.data) })
+    console.log('in fecth effect in App')
+    personService.getAll().then((resp) => { setPersons(resp.data); setFiltered(resp.data) })
   }, [])
 
   return (

@@ -1,4 +1,6 @@
 import React, { useState } from "react"
+import axios from "axios"
+import PersonService from "../service/PersonService"
 
 const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, newName, newNum }) => {
     const handleNameChange = (event) => {
@@ -19,8 +21,10 @@ const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, n
         else if (persons.filter((person) => (person.name === newName)).length > 0) {
             alert(`${newName} is already in the phonebook`)
         } else {
-            setPersons(persons.concat(newObj))
-            setFiltered(persons.concat(newObj))
+            PersonService.create(newObj).then(resp => {
+                setPersons(persons.concat(resp.data))
+                setFiltered(persons.concat(resp.data))
+            })
         }
         setNewName('')
     }
