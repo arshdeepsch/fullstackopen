@@ -1,5 +1,6 @@
-import React, { useState } from "react"
+import React from "react"
 import PersonService from "../service/PersonService"
+
 
 const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, newName, newNum, setMessage }) => {
     const handleNameChange = (event) => {
