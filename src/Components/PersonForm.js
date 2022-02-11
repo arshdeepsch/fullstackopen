@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import PersonService from "../service/PersonService"
 
-const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, newName, newNum }) => {
+const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, newName, newNum, setMessage }) => {
     const handleNameChange = (event) => {
         setNewName(event.target.value)
     }
@@ -20,17 +20,49 @@ const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, n
         else if (persons.filter((person) => (person.name === newName)).length > 0) {
             const t = window.confirm(`${newName} is already in the phonebook. Replace the old number with a new one?`)
             if (t) {
-                const obj = { ...persons.find((person) => person.name == newName), number: newObj.number };
+                const obj = { ...persons.find((person) => person.name === newName), number: newObj.number };
                 PersonService.update(obj.id, obj).then(resp => {
-                    setPersons(persons.filter(person => person.id != obj.id).concat(resp.data))
-                    setFiltered(persons.filter(person => person.id != obj.id).concat(resp.data))
+                    setPersons(persons.filter(person => person.id !== obj.id).concat(resp.data))
+                    setFiltered(persons.filter(person => person.id !== obj.id).concat(resp.data))
                 }
-                );
+                ).catch(
+                    (err) => {
+                        console.log(err)
+                        setMessage({
+                            message: `Information of ${newObj.name} has already been removed from the server`,
+                            styleObj: {
+                                padding: 10,
+                                backgroundColor: 'gray',
+                                borderRadius: 5,
+                                borderWidth: 5,
+                                color: 'red',
+                                borderStyle: 'solid'
+                            }
+                        })
+                        setTimeout(() => {
+                            setMessage({ message: null, styleObj: null });
+                        }, 5000)
+                    }
+                )
             }
         } else {
             PersonService.create(newObj).then(resp => {
                 setPersons(persons.concat(resp.data))
                 setFiltered(persons.concat(resp.data))
+                setMessage({
+                    message: `Added ${newObj.name}`,
+                    styleObj: {
+                        padding: 10,
+                        backgroundColor: 'gray',
+                        borderRadius: 5,
+                        borderWidth: 5,
+                        color: 'green',
+                        borderStyle: 'solid'
+                    }
+                })
+                setTimeout(() => {
+                    setMessage({ message: null, styleObj: null });
+                }, 5000)
             })
         }
         setNewName('')

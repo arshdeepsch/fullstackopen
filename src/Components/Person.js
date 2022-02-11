@@ -3,8 +3,7 @@ import DeleteButton from './DeleteButton'
 
 const Person = ({ persons, person, setFiltered, setPersons }) => {
     return (
-        <div> {person.name} {person.number}
-            <DeleteButton key={person.id} person={person} persons={persons} setFiltered={setFiltered} setPersons={setPersons} />
+        <div className='person'> {person.name} {person.number} <DeleteButton key={person.id} person={person} persons={persons} setFiltered={setFiltered} setPersons={setPersons} />
         </div>
     )
 }
