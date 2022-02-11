@@ -4,14 +4,13 @@ import PersonForm from './Components/PersonForm'
 import Persons from './Components/Persons'
 import personService from './service/PersonService.js'
 
-const App = (props) => {
+const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState('')
   const [filtered, setFiltered] = useState([])
 
   useEffect(() => {
-    console.log('in fecth effect in App')
     personService.getAll().then((resp) => { setPersons(resp.data); setFiltered(resp.data) })
   }, [])
 
@@ -29,7 +28,7 @@ const App = (props) => {
         newNum={newNum}
       />
       <h2>Numbers</h2>
-      <Persons filtered={filtered} />
+      <Persons filtered={filtered}  persons={persons} setFiltered={setFiltered} setPersons = {setPersons} />
     </div>
   )
 }

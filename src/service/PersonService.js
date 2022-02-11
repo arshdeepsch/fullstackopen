@@ -10,7 +10,11 @@ const create = (Obj) => {
 }
 
 const update = (id, Obj) => {
-    return axios.put(`{baseURL}/${id}`, Obj)
+    return axios.put(`${baseURL}/${id}`, Obj)
 }
 
-export default { getAll, create, update }
+const remove = (id) => {
+    return axios.delete(`${baseURL}/${id}`)
+}
+
+export default { getAll, create, update, remove }
