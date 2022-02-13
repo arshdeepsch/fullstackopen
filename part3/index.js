@@ -1,7 +1,8 @@
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
-
+const cors = require('cors')
+app.use(cors())
 
 let persons = [
     {
@@ -78,6 +79,20 @@ app.post('/api/persons', (req, res) => {
     res.json(obj)
 })
 
+app.put('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id);
+    const body = req.body;
+    persons = persons.map((person) => {
+        if (person.id === id) {
+            person.number = body.number;
+        }
+        return person;
+    })
+    res.json(persons.find(
+        (person) => person.id === id
+    ))
+
+})
 
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
