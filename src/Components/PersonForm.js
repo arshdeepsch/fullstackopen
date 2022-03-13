@@ -14,7 +14,6 @@ const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, n
         const newObj = {
             name: newName,
             number: newNum,
-            id: persons.length + 1
         }
         if (newName.trim().length === 0) {
 
@@ -24,7 +23,6 @@ const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, n
             if (t) {
                 const obj = { ...persons.find((person) => person.name === newName), number: newObj.number };
                 PersonService.update(persons.find((person) => person.name === newName).id, obj).then(resp => {
-                    console.log(resp);
                     setPersons(persons.filter(person => person.id !== obj.id).concat(resp.data))
                     setFiltered(persons.filter(person => person.id !== obj.id).concat(resp.data))
                 }
