@@ -1,7 +1,6 @@
 import React from "react"
 import PersonService from "../service/PersonService"
 
-
 const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, newName, newNum, setMessage }) => {
     const handleNameChange = (event) => {
         setNewName(event.target.value)
@@ -28,9 +27,8 @@ const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, n
                 }
                 ).catch(
                     (err) => {
-                        console.log(err)
                         setMessage({
-                            message: `Information of ${newObj.name} has already been removed from the server`,
+                            message: err.response.data.error,
                             styleObj: {
                                 padding: 10,
                                 backgroundColor: 'gray',
@@ -64,7 +62,24 @@ const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, n
                 setTimeout(() => {
                     setMessage({ message: null, styleObj: null });
                 }, 5000)
-            })
+            }).catch(
+                (err) => {
+                    setMessage({
+                        message: err.response.data.error,
+                        styleObj: {
+                            padding: 10,
+                            backgroundColor: 'gray',
+                            borderRadius: 5,
+                            borderWidth: 5,
+                            color: 'red',
+                            borderStyle: 'solid'
+                        }
+                    })
+                    setTimeout(() => {
+                        setMessage({ message: null, styleObj: null });
+                    }, 5000)
+                }
+            )
         }
         setNewName('')
     }
@@ -72,8 +87,8 @@ const PersonForm = ({ persons, setPersons, setNewName, setNewNum, setFiltered, n
         <div>
             <h2>add a new</h2>{ }
             <form onSubmit={handleSubmit}>
-                <div>name: <input value={newName} onChange={handleNameChange}></input></div>
-                <div>number: <input value={newNum} onChange={handleNumChange} /></div>
+                <div>name ({'>'}3 letters): <input value={newName} onChange={handleNameChange}></input></div>
+                <div>number(Ex: 123-456-7890): <input value={newNum} onChange={handleNumChange} /></div>
                 <button type='submit'>add</button>
             </form>
         </div>
